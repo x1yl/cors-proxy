@@ -1,7 +1,7 @@
 <div align="center" id="top"> 
   <img src="./.github/app.gif" alt="Proxy" />
 
-  &#xa0;
+&#xa0;
 
   <!-- <a href="https://proxy.netlify.app">Demo</a> -->
 </div>
@@ -19,16 +19,16 @@
 
   <img alt="Github issues" src="https://img.shields.io/github/issues/x1yl/cors-proxy?color=56BEB8" />
 
-   <img alt="Github forks" src="https://img.shields.io/github/forks/x1yl/cors-proxy?color=56BEB8" /> 
+   <img alt="Github forks" src="https://img.shields.io/github/forks/x1yl/cors-proxy?color=56BEB8" />
 
   <img alt="Github stars" src="https://img.shields.io/github/stars/x1yl/cors-proxy?color=56BEB8" /> 
 </p>
 
 <!-- Status -->
 
-<!-- <h4 align="center"> 
+<!-- <h4 align="center">
 	🚧  Proxy 🚀 Under construction...  🚧
-</h4> 
+</h4>
 
 <hr> -->
 
@@ -47,6 +47,17 @@
 ## :dart: About
 
 A simple yet powerful CORS (Cross-Origin Resource Sharing) proxy implemented as a Cloudflare Worker. This service allows web applications to make requests to resources from different origins that would otherwise be blocked by browser security policies. It functions by proxying requests through a Cloudflare Worker, adding the necessary CORS headers to enable cross-origin access.
+
+## :globe_with_meridians: Demo
+
+A demo instance is available at [proxy.cors-proxy-ff5.workers.dev](https://proxy.cors-proxy-ff5.workers.dev).
+
+:warning: **Important Usage Guidelines:**
+
+- This demo is provided for testing and evaluation purposes only
+- Excessive usage or abuse of the demo instance may lead to IP bans
+- It is strongly recommended that you deploy your own instance for production use
+- The demo may be taken down or have increase usage limits applied at any time
 
 ## :sparkles: Features
 
@@ -69,6 +80,7 @@ The following tools were used in this project:
 ## :white_check_mark: Requirements
 
 Before starting :checkered_flag:, you need to have:
+
 - [Node.js](https://nodejs.org/en/) (v16 or higher)
 - [npm](https://www.npmjs.com/) or [pnpm](https://pnpm.io/)
 - [Cloudflare account](https://dash.cloudflare.com/sign-up) (free tier works)
@@ -100,22 +112,24 @@ $ pnpm deploy
 
 ```javascript
 fetch('https://yourworkerlink.dev/?https://httpbin.org/post', {
-  method: 'post',
-  headers: {
-    'x-foo': 'bar',
-    'x-bar': 'foo',
-    'x-cors-headers': JSON.stringify({
-      // allows to send forbidden headers
-      // https://developer.mozilla.org/en-US/docs/Glossary/Forbidden_header_name
-      'cookies': 'x=123'
-    }) 
-  }
-}).then(res => {
-  // allows to read all headers (even forbidden headers like set-cookies)
-  const headers = JSON.parse(res.headers.get('cors-received-headers'))
-  console.log(headers)
-  return res.json()
-}).then(console.log)
+	method: 'post',
+	headers: {
+		'x-foo': 'bar',
+		'x-bar': 'foo',
+		'x-cors-headers': JSON.stringify({
+			// allows to send forbidden headers
+			// https://developer.mozilla.org/en-US/docs/Glossary/Forbidden_header_name
+			cookies: 'x=123',
+		}),
+	},
+})
+	.then((res) => {
+		// allows to read all headers (even forbidden headers like set-cookies)
+		const headers = JSON.parse(res.headers.get('cors-received-headers'));
+		console.log(headers);
+		return res.json();
+	})
+	.then(console.log);
 ```
 
 **Note:**
@@ -152,7 +166,6 @@ $ pnpm test:client
 # - WebSocket server for bidirectional communication
 ```
 
-
 #### Test Client
 
 The project includes an HTML-based test client for interactively testing your proxy implementation:
@@ -165,9 +178,10 @@ $ pnpm test:client
 
 **Note:**
 
-If you are on Linux you will have to edit test:client in package.json to ```open ./test/client.html```
+If you are on Linux you will have to edit test:client in package.json to `open ./test/client.html`
 
 The test client provides a user interface for:
+
 - Testing EventSource/SSE streaming through the proxy
 - Testing binary stream handling
 - Testing WebSocket proxying with interactive message sending
@@ -193,7 +207,6 @@ When submitting your PR, please ensure you've tested thoroughly using the provid
 ## :memo: License
 
 This project is under license from MIT. For more details, see the [LICENSE](LICENSE.md) file.
-
 
 Made with :heart: by <a href="https://github.com/x1yl" target="_blank">Kevin Zheng</a>
 
