@@ -1,7 +1,6 @@
 <div align="center" id="top"> 
-  <img src="./.github/app.gif" alt="Proxy" />
+  <img src="./CORS.png" alt="Proxy" width="200px" />
 
-&#xa0;
 
   <!-- <a href="https://proxy.netlify.app">Demo</a> -->
 </div>
@@ -57,7 +56,7 @@ A demo instance is available at [proxy.cors-proxy-ff5.workers.dev](https://proxy
 - This demo is provided for testing and evaluation purposes only
 - Excessive usage or abuse of the demo instance may lead to IP bans
 - It is strongly recommended that you deploy your own instance for production use
-- The demo may be taken down or have increase usage limits applied at any time
+- The demo may be taken down or have increased usage limits applied at any time
 
 ## :sparkles: Features
 
@@ -178,7 +177,7 @@ $ pnpm test:client
 
 **Note:**
 
-If you are on Linux you will have to edit test:client in package.json to `open ./test/client.html`
+If you are on Linux, you will have to edit test:client in package.json to `open ./test/client.html`
 
 The test client provides a user interface for:
 
