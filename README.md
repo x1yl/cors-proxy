@@ -57,7 +57,7 @@ A demo instance is available at [proxy.cors-proxy-ff5.workers.dev](https://proxy
 - This demo is provided for testing and evaluation purposes only
 - Excessive usage or abuse of the demo instance may lead to IP bans
 - It is strongly recommended that you deploy your own instance for production use
-- The demo may be taken down or have increase usage limits applied at any time
+- The demo may be taken down or have increased usage limits applied at any time
 
 ## :sparkles: Features
 
@@ -112,24 +112,24 @@ $ pnpm deploy
 
 ```javascript
 fetch('https://yourworkerlink.dev/?https://httpbin.org/post', {
-	method: 'post',
-	headers: {
-		'x-foo': 'bar',
-		'x-bar': 'foo',
-		'x-cors-headers': JSON.stringify({
-			// allows to send forbidden headers
-			// https://developer.mozilla.org/en-US/docs/Glossary/Forbidden_header_name
-			cookies: 'x=123',
-		}),
-	},
+        method: 'post',
+        headers: {
+                'x-foo': 'bar',
+                'x-bar': 'foo',
+                'x-cors-headers': JSON.stringify({
+                        // allows to send forbidden headers
+                        // https://developer.mozilla.org/en-US/docs/Glossary/Forbidden_header_name
+                        cookies: 'x=123',
+                }),
+        },
 })
-	.then((res) => {
-		// allows to read all headers (even forbidden headers like set-cookies)
-		const headers = JSON.parse(res.headers.get('cors-received-headers'));
-		console.log(headers);
-		return res.json();
-	})
-	.then(console.log);
+        .then((res) => {
+                // allows to read all headers (even forbidden headers like set-cookies)
+                const headers = JSON.parse(res.headers.get('cors-received-headers'));
+                console.log(headers);
+                return res.json();
+        })
+        .then(console.log);
 ```
 
 **Note:**
@@ -178,7 +178,7 @@ $ pnpm test:client
 
 **Note:**
 
-If you are on Linux you will have to edit test:client in package.json to `open ./test/client.html`
+If you are on Linux, you will have to edit test:client in package.json to `open ./test/client.html`
 
 The test client provides a user interface for:
 
