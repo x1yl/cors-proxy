@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>CORS Proxy Test Client</title>
+		<link rel="stylesheet" href="styles.css" />
+		<script src="client.js"></script>
+	</head>
+	<body>
+		<h1>CORS Proxy Test Client</h1>
+
+		<div class="container">
+			<div class="card">
+				<h2>Configuration</h2>
+				<div>
+					<label for="proxyUrl">Proxy URL:</label>
+					<input type="text" id="proxyUrl" value="http://localhost:8787" placeholder="http://localhost:8787" />
+
+					<label for="testServerUrl">Test Server URL:</label>
+					<input type="text" id="testServerUrl" value="http://localhost:3000" placeholder="http://localhost:3000" />
+				</div>
+			</div>
+
+			<div class="card" style="background-color: #f0f8ff">
+				<h2>Complete Test Suite</h2>
+				<div>
+					<button id="runAllTestsBtn" style="background-color: #4caf50; color: white; font-weight: bold; padding: 10px 20px; font-size: 16px">
+						Run All Tests
+					</button>
+					<span id="allTestsProgress" style="margin-left: 10px"></span>
+				</div>
+				<h3>Test Report:</h3>
+				<div id="testSuiteSummary" style="margin-bottom: 10px"></div>
+				<pre id="testReportOutput" style="max-height: 300px; overflow: auto; border: 1px solid #ccc; padding: 10px"></pre>
+				<div style="margin-top: 10px">
+					<button id="downloadReportBtn" style="display: none">Download Report</button>
+				</div>
+			</div>
+
+			<div class="card">
+				<h2>Stream Test</h2>
+				<button id="startStreamBtn">Start Stream</button>
+				<button id="stopStreamBtn" disabled>Stop Stream</button>
+				<div id="streamStatus">Status: Idle</div>
+				<h3>Stream Output:</h3>
+				<pre id="streamOutput"></pre>
+			</div>
+
+			<div class="card">
+				<h2>Binary Stream Test</h2>
+				<button id="startBinaryBtn">Start Binary Stream</button>
+				<button id="stopBinaryBtn" disabled>Stop Binary Stream</button>
+				<div id="binaryStatus">Status: Idle</div>
+				<h3>Binary Output:</h3>
+				<pre id="binaryOutput"></pre>
+			</div>
+
+			<div class="card">
+				<h2>WebSocket Test</h2>
+				<button id="connectWsBtn">Connect WebSocket</button>
+				<button id="disconnectWsBtn" disabled>Disconnect</button>
+				<div id="wsStatus">Status: Disconnected</div>
+				<div>
+					<input type="text" id="wsMessage" placeholder="Type a message to send" />
+					<button id="wsSendBtn" disabled>Send</button>
+				</div>
+				<h3>WebSocket Messages:</h3>
+				<pre id="wsOutput"></pre>
+			</div>
+
+			<div class="card">
+				<h2>HTTP Methods Test</h2>
+				<div class="tabs">
+					<div class="tab active" data-tab="get-tab">GET</div>
+					<div class="tab" data-tab="post-tab">POST</div>
+					<div class="tab" data-tab="put-tab">PUT</div>
+					<div class="tab" data-tab="delete-tab">DELETE</div>
+				</div>
+
+				<div class="tab-content active" id="get-tab">
+					<div>
+						<label>Query Parameters (JSON):</label>
+						<textarea id="getParams" rows="3">{"param1": "value1", "param2": "value2"}</textarea>
+						<button id="sendGetBtn">Send GET Request</button>
+					</div>
+				</div>
+
+				<div class="tab-content" id="post-tab">
+					<div>
+						<label>Request Body (JSON):</label>
+						<textarea id="postBody" rows="3">{"name": "Test User", "email": "test@example.com"}</textarea>
+						<button id="sendPostBtn">Send POST Request</button>
+					</div>
+				</div>
+
+				<div class="tab-content" id="put-tab">
+					<div>
+						<label>Request Body (JSON):</label>
+						<textarea id="putBody" rows="3">{"id": 1, "name": "Updated User", "email": "updated@example.com"}</textarea>
+						<button id="sendPutBtn">Send PUT Request</button>
+					</div>
+				</div>
+
+				<div class="tab-content" id="delete-tab">
+					<div>
+						<label>Resource ID:</label>
+						<input type="text" id="deleteId" value="123" />
+						<button id="sendDeleteBtn">Send DELETE Request</button>
+					</div>
+				</div>
+
+				<h3>Response:</h3>
+				<div id="httpMethodStatus">Status: No request sent</div>
+				<pre id="httpMethodOutput"></pre>
+			</div>
+
+			<div class="card">
+				<h2>Status Code Test</h2>
+				<div>
+					<label for="statusCode">Select Status Code:</label>
+					<select id="statusCode">
+						<option value="200">200 OK</option>
+						<option value="201">201 Created</option>
+						<option value="204">204 No Content</option>
+						<option value="400">400 Bad Request</option>
+						<option value="401">401 Unauthorized</option>
+						<option value="403">403 Forbidden</option>
+						<option value="404">404 Not Found</option>
+						<option value="500">500 Server Error</option>
+					</select>
+					<button id="testStatusBtn">Test Status Code</button>
+				</div>
+				<h3>Response:</h3>
+				<div id="statusTestStatus">Status: No request sent</div>
+				<pre id="statusTestOutput"></pre>
+			</div>
+
+			<div class="card">
+				<h2>Custom Headers Test</h2>
+				<div>
+					<label>Custom Headers (JSON):</label>
+					<textarea id="customHeaders" rows="3">{"X-Custom-Header": "test-value", "Authorization": "Bearer test-token"}</textarea>
+					<button id="testHeadersBtn">Test Custom Headers</button>
+				</div>
+				<h3>Response:</h3>
+				<div id="headersTestStatus">Status: No request sent</div>
+				<pre id="headersTestOutput"></pre>
+			</div>
+
+			<div class="card">
+				<h2>File Download Test</h2>
+				<button id="testImageDownloadBtn">Download Test Image</button>
+				<div id="downloadStatus">Status: No download started</div>
+				<div id="imagePreview"></div>
+			</div>
+
+			<div class="card">
+				<h2>Large Payload Test</h2>
+				<div>
+					<label for="dataSize">Number of Items:</label>
+					<select id="dataSize">
+						<option value="10">10 items (small)</option>
+						<option value="100">100 items (medium)</option>
+						<option value="1000">1000 items (large)</option>
+						<option value="5000">5000 items (very large)</option>
+					</select>
+					<button id="testLargePayloadBtn">Test Large Payload</button>
+				</div>
+				<h3>Response Summary:</h3>
+				<div id="largePayloadStatus">Status: No request sent</div>
+				<pre id="largePayloadOutput"></pre>
+			</div>
+
+			<div class="card">
+				<h2>Timeout/Delay Test</h2>
+				<div>
+					<label for="delaySeconds">Delay (seconds):</label>
+					<select id="delaySeconds">
+						<option value="1">1 second</option>
+						<option value="3">3 seconds</option>
+						<option value="5">5 seconds</option>
+						<option value="10">10 seconds</option>
+					</select>
+					<button id="testDelayBtn">Test Delayed Response</button>
+				</div>
+				<h3>Response:</h3>
+				<div id="delayTestStatus">Status: No request sent</div>
+				<pre id="delayTestOutput"></pre>
+			</div>
+		</div>
+
+		<div class="card">
+			<h2>Authentication Test</h2>
+			<div>
+				<label>Bearer Token:</label>
+				<input type="text" id="authToken" value="test-token-12345" />
+				<button id="testAuthBtn">Test Authentication</button>
+			</div>
+			<h3>Response:</h3>
+			<div id="authTestStatus">Status: No request sent</div>
+			<pre id="authTestOutput"></pre>
+		</div>
+
+		<div class="card">
+			<h2>URL Encoding Test</h2>
+			<div>
+				<label>Select URL Type:</label>
+				<select id="urlType">
+					<option value="spaces">URLs with spaces</option>
+					<option value="unicode">URLs with Unicode characters</option>
+					<option value="fragments">URLs with fragments (#)</option>
+					<option value="nested">Nested query parameters</option>
+				</select>
+				<button id="testUrlEncodingBtn">Test URL Encoding</button>
+			</div>
+			<h3>Response:</h3>
+			<div id="urlEncodingStatus">Status: No request sent</div>
+			<pre id="urlEncodingOutput"></pre>
+		</div>
+
+		<div class="card">
+			<h2>x-cors-headers Test</h2>
+			<div>
+				<p>Tests the proxy's ability to process the special x-cors-headers header which allows passing arbitrary headers</p>
+				<button id="testXCorsHeadersBtn">Test x-cors-headers</button>
+			</div>
+			<h3>Response:</h3>
+			<div id="xCorsHeadersStatus">Status: No request sent</div>
+			<pre id="xCorsHeadersOutput"></pre>
+		</div>
+
+		<div class="card">
+			<h2>Redirect Handling Test</h2>
+			<div>
+				<label>Redirect Type:</label>
+				<select id="redirectType">
+					<option value="301">301 Permanent</option>
+					<option value="302">302 Found (Default)</option>
+					<option value="307">307 Temporary</option>
+					<option value="308">308 Permanent</option>
+				</select>
+				<button id="testRedirectBtn">Test Redirect Handling</button>
+			</div>
+			<h3>Response:</h3>
+			<div id="redirectStatus">Status: No request sent</div>
+			<pre id="redirectOutput"></pre>
+		</div>
+
+		<div class="card">
+			<h2>Content-Type Test</h2>
+			<div>
+				<label>Content Type:</label>
+				<select id="contentType">
+					<option value="xml">XML</option>
+					<option value="html">HTML</option>
+					<option value="text-charset">Text with charset</option>
+				</select>
+				<button id="testContentTypeBtn">Test Content Type</button>
+			</div>
+			<h3>Response:</h3>
+			<div id="contentTypeStatus">Status: No request sent</div>
+			<pre id="contentTypeOutput"></pre>
+		</div>
+
+		<div class="card">
+			<h2>Very Long URL Test</h2>
+			<div>
+				<label>URL Length:</label>
+				<select id="urlLength">
+					<option value="500">500 characters</option>
+					<option value="1000">1000 characters</option>
+					<option value="2000">2000 characters</option>
+				</select>
+				<button id="testLongUrlBtn">Test Long URL</button>
+			</div>
+			<h3>Response:</h3>
+			<div id="longUrlStatus">Status: No request sent</div>
+			<pre id="longUrlOutput"></pre>
+		</div>
+
+		<div class="card">
+			<h2>Non-Standard Status Code Test</h2>
+			<div>
+				<label>Select Status Code:</label>
+				<select id="unusualStatusCode">
+					<option value="418">418 I'm a teapot</option>
+					<option value="429">429 Too Many Requests</option>
+					<option value="451">451 Unavailable For Legal Reasons</option>
+					<option value="509">509 Bandwidth Limit Exceeded</option>
+					<option value="599">599 Network Connect Timeout</option>
+				</select>
+				<button id="testUnusualStatusBtn">Test Unusual Status</button>
+			</div>
+			<h3>Response:</h3>
+			<div id="unusualStatusTestStatus">Status: No request sent</div>
+			<pre id="unusualStatusTestOutput"></pre>
+		</div>
+
+		<div class="card">
+			<h2>Concurrent Requests Test</h2>
+			<div>
+				<label>Number of Concurrent Requests:</label>
+				<select id="concurrentCount">
+					<option value="5">5 requests</option>
+					<option value="10">10 requests</option>
+					<option value="20">20 requests</option>
+				</select>
+				<button id="testConcurrentBtn">Test Concurrent Requests</button>
+			</div>
+			<h3>Response:</h3>
+			<div id="concurrentStatus">Status: No requests sent</div>
+			<pre id="concurrentOutput"></pre>
+		</div>
+
+		<div class="card">
+			<h2>Malformed Content Test</h2>
+			<div>
+				<label>Malformed Type:</label>
+				<select id="malformedType">
+					<option value="json">Invalid JSON</option>
+					<option value="incomplete">Incomplete Response</option>
+				</select>
+				<button id="testMalformedBtn">Test Malformed Content</button>
+			</div>
+			<h3>Response:</h3>
+			<div id="malformedStatus">Status: No request sent</div>
+			<pre id="malformedOutput"></pre>
+		</div>
+	</body>
+</html>
