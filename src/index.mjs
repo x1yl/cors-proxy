@@ -305,9 +305,9 @@ function createLandingPage(originUrl) {
                         
                         <h2>How to Use</h2>
                         <p>Append your target URL as a query parameter:</p>
-                        <p><code>${originUrl.origin}/?https://api.example.com/data</code></p>
+                        <p><code>${originUrl.origin}/?https://httpbin.org/get</code></p>
                         <i>or</i>
-                        <p><code>${originUrl.origin}/?link=https://api.example.com/data</code></p>
+                        <p><code>${originUrl.origin}/?link=https://httpbin.org/get</code></p>
                         
                         <h2>Features</h2>
                         <ul>

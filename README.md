@@ -2,7 +2,7 @@
   <img src="./CORS.png" alt="Proxy" width="200px" />
 
 
-  <!-- <a href="https://proxy.netlify.app">Demo</a> -->
+  <a href="proxy.cors-proxy-ff5.workers.dev">Demo</a>
 </div>
 
 <h1 align="center">Cors Proxy on Cloudflare Worker</h1>
@@ -111,7 +111,7 @@ $ pnpm deploy
 ## :computer: Usage Example
 
 ```javascript
-fetch('https://yourworkerlink.dev/?https://httpbin.org/post', {
+fetch('proxy.cors-proxy-ff5.workers.dev/?https://httpbin.org/post', {
         method: 'post',
         headers: {
                 'x-foo': 'bar',
@@ -140,15 +140,11 @@ All received headers are also returned in "cors-received-headers" header. This a
 
 We welcome contributions! Here's how to set up your development environment and test your changes:
 
-### Development Setup
+#### Development Setup
 
 1. Fork and clone the repository
-2. Install dependencies with `pnpm install`
-3. Make your changes to the worker code
-
-### Testing Your Changes
-
-This project includes testing utilities to help you verify your changes:
+2. Make sure to switch to the staging branch (`git checkout staging`)
+3. Install dependencies with (`pnpm install`)
 
 #### Test Server
 
@@ -156,14 +152,7 @@ The test server simulates various API endpoints and WebSocket connections for te
 
 ```bash
 # Start the test server
-$ pnpm test:client
-
-
-# The server will run on http://localhost:3000 with the following capabilities:
-# - Standard HTTP endpoint at the root (/)
-# - Server-Sent Events (SSE) streaming at /stream
-# - Binary streaming at /binary-stream
-# - WebSocket server for bidirectional communication
+$ pnpm test:server
 ```
 
 #### Test Client
@@ -180,13 +169,6 @@ $ pnpm test:client
 
 If you are on Linux, you will have to edit test:client in package.json to `open ./test/client.html`
 
-The test client provides a user interface for:
-
-- Testing EventSource/SSE streaming through the proxy
-- Testing binary stream handling
-- Testing WebSocket proxying with interactive message sending
-- Configurable proxy URL and test server URL for flexible testing
-
 ### Testing Workflow
 
 1. Run the test server: `pnpm test:server`
@@ -197,10 +179,9 @@ The test client provides a user interface for:
 
 ### Submitting Changes
 
-1. Create a new branch for your feature or bugfix
-2. Make your changes with appropriate tests
-3. Verify all functionality works with the test client
-4. Submit a pull request with a clear description of the changes and their benefits
+1. Commit your changes (`git commit -m 'New Features'`)
+2. Pust to the branch (`git push origin staging`)
+3. Create a Pull Request on the Staging branch **NOT** the main branch!
 
 When submitting your PR, please ensure you've tested thoroughly using the provided test client and server.
 
