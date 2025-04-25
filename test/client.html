@@ -3,332 +3,359 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>CORS Proxy Test Client</title>
+		<title>CORS Proxy Endpoint Tester</title>
 		<link rel="stylesheet" href="styles.css" />
-		<script src="client.js"></script>
 	</head>
 	<body>
-		<h1>CORS Proxy Test Client</h1>
+		<h1>CORS Proxy Endpoint Tester</h1>
 
 		<div class="container">
-			<div class="card">
-				<h2>Configuration</h2>
-				<div>
-					<label for="proxyUrl">Proxy URL:</label>
-					<input type="text" id="proxyUrl" value="http://localhost:8787" placeholder="http://localhost:8787" />
+			<div class="controls">
+				<label for="proxyUrl">Proxy URL:</label>
+				<input type="text" id="proxyUrl" value="http://localhost:8787" placeholder="http://localhost:8787" />
+				<button id="runAllTests">Run All Tests</button>
+			</div>
 
-					<label for="testServerUrl">Test Server URL:</label>
-					<input type="text" id="testServerUrl" value="http://localhost:3000" placeholder="http://localhost:3000" />
+			<div class="tabs">
+				<div class="tab active" id="automatedTestsTab">Automated Tests</div>
+				<div class="tab" id="individualEndpointTab">Individual Endpoint Test</div>
+				<div class="tab" id="webSocketTab">WebSocket Test</div>
+			</div>
+
+			<div id="automatedTestsSection">
+				<div class="category-buttons">
+					<h3>Test Specific Categories:</h3>
+					<button class="category" data-test-category="BasicEndpoints">Basic Endpoints</button>
+					<button class="category" data-test-category="StatusCodes">Status Codes</button>
+					<button class="category" data-test-category="ResponseHeaders">Response Headers</button>
+					<button class="category" data-test-category="SpecialFormats">Special Formats</button>
+					<button class="category" data-test-category="EncodingAndCompression">Encoding & Compression</button>
+					<button class="category" data-test-category="Authentication">Authentication</button>
+					<button class="category" data-test-category="Streaming">Streaming</button>
+					<button class="category" data-test-category="RedirectsAndCookies">Redirects & Cookies</button>
+					<button class="category" data-test-category="Images">Images</button>
+					<button class="category" data-test-category="DelayAndTimeout">Delay & Timeout</button>
+					<button class="category" data-test-category="Trailers">HTTP Trailers</button>
+					<button class="category" data-test-category="MiscEndpoints">Miscellaneous</button>
+					<button class="category" data-test-category="SSE">Server-Sent Events</button>
+					<button class="category" data-test-category="WebSockets">WebSockets</button>
 				</div>
 			</div>
 
-			<div class="card" style="background-color: #f0f8ff">
-				<h2>Complete Test Suite</h2>
-				<div>
-					<button
-						id="runAllTestsBtn"
-						style="background-color: #4caf50; color: white; font-weight: bold; padding: 10px 20px; font-size: 16px"
-					>
-						Run All Tests
-					</button>
-					<span id="allTestsProgress" style="margin-left: 10px"></span>
+			<div id="individualEndpointSection" style="display: none">
+				<div class="section-title">
+					<h3>Test Individual Endpoint</h3>
+					<p>Enter an endpoint path and optional parameters to test</p>
 				</div>
-				<h3>Test Report:</h3>
-				<div id="testSuiteSummary" style="margin-bottom: 10px"></div>
-				<pre id="testReportOutput" style="max-height: 300px; overflow: auto; border: 1px solid #ccc; padding: 10px"></pre>
-				<div style="margin-top: 10px">
-					<button id="downloadReportBtn" style="display: none">Download Report</button>
+
+				<div class="form-group">
+					<label for="endpointInput">Endpoint Path:</label>
+					<input type="text" id="endpointInput" placeholder="/get" value="/get" />
+				</div>
+
+				<div class="form-group">
+					<label for="methodSelect">HTTP Method:</label>
+					<select id="methodSelect">
+						<option value="GET">GET</option>
+						<option value="POST">POST</option>
+						<option value="PUT">PUT</option>
+						<option value="DELETE">DELETE</option>
+						<option value="PATCH">PATCH</option>
+						<option value="HEAD">HEAD</option>
+						<option value="OPTIONS">OPTIONS</option>
+					</select>
+				</div>
+
+				<div class="form-group" id="bodySection" style="display: none">
+					<label for="requestBodyInput">Request Body (JSON):</label>
+					<textarea id="requestBodyInput" placeholder='{"key": "value"}'></textarea>
+				</div>
+
+				<div class="form-group">
+					<label for="headersInput">Headers (JSON):</label>
+					<textarea id="headersInput" placeholder='{"Content-Type": "application/json"}'></textarea>
+				</div>
+
+				<button id="testEndpointBtn">Test Endpoint</button>
+
+				<div class="section-title">
+					<h3>Quick Tests</h3>
+				</div>
+
+				<div class="quick-tests">
+					<button class="quick-test" data-endpoint="/get">GET Request</button>
+					<button class="quick-test" data-endpoint="/post" data-method="POST">POST Request</button>
+					<button class="quick-test" data-endpoint="/status/404">404 Status</button>
+					<button class="quick-test" data-endpoint="/uuid">Get UUID</button>
+					<button class="quick-test" data-endpoint="/image/png">PNG Image</button>
+					<button class="quick-test" data-endpoint="/ip">Get IP</button>
+					<button class="quick-test" data-endpoint="/headers">Headers</button>
+					<button class="quick-test" data-endpoint="/gzip">GZIP</button>
+					<button class="quick-test" data-endpoint="/user-agent">User-Agent</button>
+					<button class="quick-test" data-endpoint="/delay/1">Delay (1s)</button>
+					<button class="quick-test" data-endpoint="/stream/5">Stream Lines</button>
+					<button class="quick-test" data-endpoint="/base64/encode/test">Base64 Encode</button>
+					<button class="quick-test" data-endpoint="/cookies">Cookies</button>
+					<button class="quick-test" data-endpoint="/anything/test123">Anything</button>
+					<button class="quick-test" data-endpoint="/xml">XML</button>
 				</div>
 			</div>
 
-			<div class="card">
-				<h2>Stream Test</h2>
-				<button id="startStreamBtn">Start Stream</button>
-				<button id="stopStreamBtn" disabled>Stop Stream</button>
-				<div id="streamStatus">Status: Idle</div>
-				<h3>Stream Output:</h3>
-				<pre id="streamOutput"></pre>
-			</div>
+			<div id="webSocketSection" style="display: none">
+				<div class="section-title">
+					<h3>WebSocket Test</h3>
+					<p>Test WebSocket connections through the proxy</p>
+				</div>
 
-			<div class="card">
-				<h2>Binary Stream Test</h2>
-				<button id="startBinaryBtn">Start Binary Stream</button>
-				<button id="stopBinaryBtn" disabled>Stop Binary Stream</button>
-				<div id="binaryStatus">Status: Idle</div>
-				<h3>Binary Output:</h3>
-				<pre id="binaryOutput"></pre>
-			</div>
+				<div class="form-group">
+					<label for="wsTargetUrl">WebSocket Target URL:</label>
+					<input type="text" id="wsTargetUrl" value="wss://echo.websocket.org/" placeholder="wss://echo.websocket.org/" />
+				</div>
 
-			<div class="card">
-				<h2>WebSocket Test</h2>
-				<button id="connectWsBtn">Connect WebSocket</button>
-				<button id="disconnectWsBtn" disabled>Disconnect</button>
-				<div id="wsStatus">Status: Disconnected</div>
-				<div>
-					<input type="text" id="wsMessage" placeholder="Type a message to send" />
+				<div class="ws-controls">
+					<button id="wsConnectBtn">Connect</button>
+					<button id="wsDisconnectBtn" disabled>Disconnect</button>
+				</div>
+
+				<div class="ws-test-buttons">
+					<button id="wsEchoTest" disabled>Run Echo Test (5 Messages)</button>
+					<button id="wsClearOutput">Clear Output</button>
+				</div>
+
+				<div id="wsOutput" class="output-box"></div>
+
+				<div class="form-group">
+					<label for="wsMessage">Message:</label>
+					<input type="text" id="wsMessage" placeholder="Type a message to send" disabled />
 					<button id="wsSendBtn" disabled>Send</button>
 				</div>
-				<h3>WebSocket Messages:</h3>
-				<pre id="wsOutput"></pre>
 			</div>
 
-			<div class="card">
-				<h2>HTTP Methods Test</h2>
-				<div class="tabs">
-					<div class="tab active" data-tab="get-tab">GET</div>
-					<div class="tab" data-tab="post-tab">POST</div>
-					<div class="tab" data-tab="put-tab">PUT</div>
-					<div class="tab" data-tab="delete-tab">DELETE</div>
-				</div>
-
-				<div class="tab-content active" id="get-tab">
-					<div>
-						<label>Query Parameters (JSON):</label>
-						<textarea id="getParams" rows="3">{"param1": "value1", "param2": "value2"}</textarea>
-						<button id="sendGetBtn">Send GET Request</button>
-					</div>
-				</div>
-
-				<div class="tab-content" id="post-tab">
-					<div>
-						<label>Request Body (JSON):</label>
-						<textarea id="postBody" rows="3">{"name": "Test User", "email": "test@example.com"}</textarea>
-						<button id="sendPostBtn">Send POST Request</button>
-					</div>
-				</div>
-
-				<div class="tab-content" id="put-tab">
-					<div>
-						<label>Request Body (JSON):</label>
-						<textarea id="putBody" rows="3">{"id": 1, "name": "Updated User", "email": "updated@example.com"}</textarea>
-						<button id="sendPutBtn">Send PUT Request</button>
-					</div>
-				</div>
-
-				<div class="tab-content" id="delete-tab">
-					<div>
-						<label>Resource ID:</label>
-						<input type="text" id="deleteId" value="123" />
-						<button id="sendDeleteBtn">Send DELETE Request</button>
-					</div>
-				</div>
-
-				<h3>Response:</h3>
-				<div id="httpMethodStatus">Status: No request sent</div>
-				<pre id="httpMethodOutput"></pre>
-			</div>
-
-			<div class="card">
-				<h2>Status Code Test</h2>
-				<div>
-					<label for="statusCode">Select Status Code:</label>
-					<select id="statusCode">
-						<option value="200">200 OK</option>
-						<option value="201">201 Created</option>
-						<option value="204">204 No Content</option>
-						<option value="400">400 Bad Request</option>
-						<option value="401">401 Unauthorized</option>
-						<option value="403">403 Forbidden</option>
-						<option value="404">404 Not Found</option>
-						<option value="500">500 Server Error</option>
-					</select>
-					<button id="testStatusBtn">Test Status Code</button>
-				</div>
-				<h3>Response:</h3>
-				<div id="statusTestStatus">Status: No request sent</div>
-				<pre id="statusTestOutput"></pre>
-			</div>
-
-			<div class="card">
-				<h2>Custom Headers Test</h2>
-				<div>
-					<label>Custom Headers (JSON):</label>
-					<textarea id="customHeaders" rows="3">{"X-Custom-Header": "test-value", "Authorization": "Bearer test-token"}</textarea>
-					<button id="testHeadersBtn">Test Custom Headers</button>
-				</div>
-				<h3>Response:</h3>
-				<div id="headersTestStatus">Status: No request sent</div>
-				<pre id="headersTestOutput"></pre>
-			</div>
-
-			<div class="card">
-				<h2>File Download Test</h2>
-				<button id="testImageDownloadBtn">Download Test Image</button>
-				<div id="downloadStatus">Status: No download started</div>
-				<div id="imagePreview"></div>
-			</div>
-
-			<div class="card">
-				<h2>Large Payload Test</h2>
-				<div>
-					<label for="dataSize">Number of Items:</label>
-					<select id="dataSize">
-						<option value="10">10 items (small)</option>
-						<option value="100">100 items (medium)</option>
-						<option value="1000">1000 items (large)</option>
-						<option value="5000">5000 items (very large)</option>
-					</select>
-					<button id="testLargePayloadBtn">Test Large Payload</button>
-				</div>
-				<h3>Response Summary:</h3>
-				<div id="largePayloadStatus">Status: No request sent</div>
-				<pre id="largePayloadOutput"></pre>
-			</div>
-
-			<div class="card">
-				<h2>Timeout/Delay Test</h2>
-				<div>
-					<label for="delaySeconds">Delay (seconds):</label>
-					<select id="delaySeconds">
-						<option value="1">1 second</option>
-						<option value="3">3 seconds</option>
-						<option value="5">5 seconds</option>
-						<option value="10">10 seconds</option>
-					</select>
-					<button id="testDelayBtn">Test Delayed Response</button>
-				</div>
-				<h3>Response:</h3>
-				<div id="delayTestStatus">Status: No request sent</div>
-				<pre id="delayTestOutput"></pre>
-			</div>
+			<div id="testOutput" class="output"></div>
 		</div>
 
-		<div class="card">
-			<h2>Authentication Test</h2>
-			<div>
-				<label>Bearer Token:</label>
-				<input type="text" id="authToken" value="test-token-12345" />
-				<button id="testAuthBtn">Test Authentication</button>
-			</div>
-			<h3>Response:</h3>
-			<div id="authTestStatus">Status: No request sent</div>
-			<pre id="authTestOutput"></pre>
-		</div>
+		<script src="client.js"></script>
+		<script>
+			document.addEventListener('DOMContentLoaded', () => {
+				// Tab elements
+				const tabs = {
+					automated: document.getElementById('automatedTestsTab'),
+					individual: document.getElementById('individualEndpointTab'),
+					websocket: document.getElementById('webSocketTab'),
+				};
 
-		<div class="card">
-			<h2>URL Encoding Test</h2>
-			<div>
-				<label>Select URL Type:</label>
-				<select id="urlType">
-					<option value="spaces">URLs with spaces</option>
-					<option value="unicode">URLs with Unicode characters</option>
-					<option value="fragments">URLs with fragments (#)</option>
-					<option value="nested">Nested query parameters</option>
-				</select>
-				<button id="testUrlEncodingBtn">Test URL Encoding</button>
-			</div>
-			<h3>Response:</h3>
-			<div id="urlEncodingStatus">Status: No request sent</div>
-			<pre id="urlEncodingOutput"></pre>
-		</div>
+				const sections = {
+					automated: document.getElementById('automatedTestsSection'),
+					individual: document.getElementById('individualEndpointSection'),
+					websocket: document.getElementById('webSocketSection'),
+				};
 
-		<div class="card">
-			<h2>x-cors-headers Test</h2>
-			<div>
-				<p>Tests the proxy's ability to process the special x-cors-headers header which allows passing arbitrary headers</p>
-				<button id="testXCorsHeadersBtn">Test x-cors-headers</button>
-			</div>
-			<h3>Response:</h3>
-			<div id="xCorsHeadersStatus">Status: No request sent</div>
-			<pre id="xCorsHeadersOutput"></pre>
-		</div>
+				// WebSocket elements
+				const ws = {
+					targetUrl: document.getElementById('wsTargetUrl'),
+					connectBtn: document.getElementById('wsConnectBtn'),
+					disconnectBtn: document.getElementById('wsDisconnectBtn'),
+					message: document.getElementById('wsMessage'),
+					sendBtn: document.getElementById('wsSendBtn'),
+					output: document.getElementById('wsOutput'),
+					echoTest: document.getElementById('wsEchoTest'),
+					clearOutput: document.getElementById('wsClearOutput'),
+				};
 
-		<div class="card">
-			<h2>Redirect Handling Test</h2>
-			<div>
-				<label>Redirect Type:</label>
-				<select id="redirectType">
-					<option value="301">301 Permanent</option>
-					<option value="302">302 Found (Default)</option>
-					<option value="307">307 Temporary</option>
-					<option value="308">308 Permanent</option>
-				</select>
-				<button id="testRedirectBtn">Test Redirect Handling</button>
-			</div>
-			<h3>Response:</h3>
-			<div id="redirectStatus">Status: No request sent</div>
-			<pre id="redirectOutput"></pre>
-		</div>
+				let socket = null;
 
-		<div class="card">
-			<h2>Content-Type Test</h2>
-			<div>
-				<label>Content Type:</label>
-				<select id="contentType">
-					<option value="xml">XML</option>
-					<option value="html">HTML</option>
-					<option value="text-charset">Text with charset</option>
-				</select>
-				<button id="testContentTypeBtn">Test Content Type</button>
-			</div>
-			<h3>Response:</h3>
-			<div id="contentTypeStatus">Status: No request sent</div>
-			<pre id="contentTypeOutput"></pre>
-		</div>
+				// Tab switching logic
+				function switchTab(tabName) {
+					// Deactivate all tabs
+					Object.values(tabs).forEach((tab) => tab.classList.remove('active'));
+					Object.values(sections).forEach((section) => (section.style.display = 'none'));
 
-		<div class="card">
-			<h2>Very Long URL Test</h2>
-			<div>
-				<label>URL Length:</label>
-				<select id="urlLength">
-					<option value="500">500 characters</option>
-					<option value="1000">1000 characters</option>
-					<option value="2000">2000 characters</option>
-				</select>
-				<button id="testLongUrlBtn">Test Long URL</button>
-			</div>
-			<h3>Response:</h3>
-			<div id="longUrlStatus">Status: No request sent</div>
-			<pre id="longUrlOutput"></pre>
-		</div>
+					// Activate selected tab
+					tabs[tabName].classList.add('active');
+					sections[tabName].style.display = 'block';
 
-		<div class="card">
-			<h2>Non-Standard Status Code Test</h2>
-			<div>
-				<label>Select Status Code:</label>
-				<select id="unusualStatusCode">
-					<option value="418">418 I'm a teapot</option>
-					<option value="429">429 Too Many Requests</option>
-					<option value="451">451 Unavailable For Legal Reasons</option>
-					<option value="509">509 Bandwidth Limit Exceeded</option>
-					<option value="599">599 Network Connect Timeout</option>
-				</select>
-				<button id="testUnusualStatusBtn">Test Unusual Status</button>
-			</div>
-			<h3>Response:</h3>
-			<div id="unusualStatusTestStatus">Status: No request sent</div>
-			<pre id="unusualStatusTestOutput"></pre>
-		</div>
+					// Show/hide test output
+					document.getElementById('testOutput').style.display = tabName === 'websocket' ? 'none' : 'block';
+				}
 
-		<div class="card">
-			<h2>Concurrent Requests Test</h2>
-			<div>
-				<label>Number of Concurrent Requests:</label>
-				<select id="concurrentCount">
-					<option value="5">5 requests</option>
-					<option value="10">10 requests</option>
-					<option value="20">20 requests</option>
-				</select>
-				<button id="testConcurrentBtn">Test Concurrent Requests</button>
-			</div>
-			<h3>Response:</h3>
-			<div id="concurrentStatus">Status: No requests sent</div>
-			<pre id="concurrentOutput"></pre>
-		</div>
+				tabs.automated.addEventListener('click', () => switchTab('automated'));
+				tabs.individual.addEventListener('click', () => switchTab('individual'));
+				tabs.websocket.addEventListener('click', () => switchTab('websocket'));
 
-		<div class="card">
-			<h2>Malformed Content Test</h2>
-			<div>
-				<label>Malformed Type:</label>
-				<select id="malformedType">
-					<option value="json">Invalid JSON</option>
-					<option value="incomplete">Incomplete Response</option>
-				</select>
-				<button id="testMalformedBtn">Test Malformed Content</button>
-			</div>
-			<h3>Response:</h3>
-			<div id="malformedStatus">Status: No request sent</div>
-			<pre id="malformedOutput"></pre>
-		</div>
+				// WebSocket functionality
+				function logWsMessage(text, type = 'system') {
+					const div = document.createElement('div');
+					div.className = `ws-${type}`;
+					div.textContent = text;
+					ws.output.appendChild(div);
+					ws.output.scrollTop = ws.output.scrollHeight;
+				}
+
+				// Connect to WebSocket
+				ws.connectBtn.addEventListener('click', () => {
+					const proxyUrl = document.getElementById('proxyUrl').value.trim();
+					const targetUrl = ws.targetUrl.value.trim();
+
+					if (!proxyUrl || !targetUrl) {
+						logWsMessage('Please enter both proxy URL and WebSocket target URL', 'error');
+						return;
+					}
+
+					try {
+						// Convert HTTP proxy URL to WebSocket URL
+						let wsProxyUrl = proxyUrl;
+						if (wsProxyUrl.startsWith('http://')) {
+							wsProxyUrl = wsProxyUrl.replace('http://', 'ws://');
+						} else if (wsProxyUrl.startsWith('https://')) {
+							wsProxyUrl = wsProxyUrl.replace('https://', 'wss://');
+						}
+
+						const fullUrl = `${wsProxyUrl}/?${encodeURIComponent(targetUrl)}`;
+						logWsMessage(`Connecting to: ${fullUrl}`);
+
+						socket = new WebSocket(fullUrl);
+
+						socket.onopen = () => {
+							logWsMessage('Connection established');
+							ws.message.disabled = false;
+							ws.sendBtn.disabled = false;
+							ws.connectBtn.disabled = true;
+							ws.disconnectBtn.disabled = false;
+							ws.echoTest.disabled = false;
+						};
+
+						socket.onmessage = (event) => {
+							try {
+								const data = JSON.parse(event.data);
+								if (data.type && data.message) {
+									logWsMessage(`[${data.type}] ${data.message}`, data.type);
+								} else {
+									logWsMessage(`Received: ${event.data}`, 'receive');
+								}
+							} catch {
+								logWsMessage(`Received: ${event.data}`, 'receive');
+							}
+						};
+
+						socket.onclose = (event) => {
+							logWsMessage(`Connection closed (Code: ${event.code})${event.reason ? ' - ' + event.reason : ''}`);
+							disconnectWs();
+						};
+
+						socket.onerror = (error) => {
+							logWsMessage(`Error: ${error.message || 'Connection error'}`, 'error');
+						};
+					} catch (error) {
+						logWsMessage(`Failed to create WebSocket: ${error.message}`, 'error');
+					}
+				});
+
+				function disconnectWs() {
+					if (socket) {
+						socket.close();
+						socket = null;
+					}
+
+					ws.message.disabled = true;
+					ws.sendBtn.disabled = true;
+					ws.connectBtn.disabled = false;
+					ws.disconnectBtn.disabled = true;
+					ws.echoTest.disabled = true;
+				}
+
+				ws.disconnectBtn.addEventListener('click', () => {
+					disconnectWs();
+					logWsMessage('Disconnected by user');
+				});
+
+				function sendWsMessage() {
+					const message = ws.message.value.trim();
+					if (!message || !socket || socket.readyState !== WebSocket.OPEN) return;
+
+					socket.send(message);
+					logWsMessage(`Sent: ${message}`, 'send');
+					ws.message.value = '';
+				}
+
+				ws.sendBtn.addEventListener('click', sendWsMessage);
+
+				ws.message.addEventListener('keypress', (e) => {
+					if (e.key === 'Enter') {
+						sendWsMessage();
+					}
+				});
+
+				// Echo test functionality
+				ws.echoTest.addEventListener('click', async () => {
+					if (!socket || socket.readyState !== WebSocket.OPEN) {
+						logWsMessage('WebSocket is not connected', 'error');
+						return;
+					}
+
+					logWsMessage('Starting echo test with 5 messages...', 'system');
+
+					const sent = [];
+					const received = [];
+					const originalOnMessage = socket.onmessage;
+
+					socket.onmessage = (event) => {
+						try {
+							const data = JSON.parse(event.data);
+							if (data.type === 'system' || data.type === 'open') {
+								logWsMessage(`System message: ${data.message}`, 'system');
+								return;
+							}
+						} catch {
+							received.push(event.data);
+							logWsMessage(`Echo test received: ${event.data}`, 'receive');
+
+							if (received.length === 5) {
+								const allEchoed = sent.every((msg) => received.includes(msg));
+
+								if (allEchoed) {
+									logWsMessage('✅ Echo test passed! All 5 messages were echoed back correctly.', 'system');
+								} else {
+									logWsMessage('❌ Echo test failed. Not all messages were echoed back correctly.', 'error');
+
+									const missing = sent.filter((msg) => !received.includes(msg));
+									if (missing.length > 0) {
+										logWsMessage(`Messages not echoed: ${missing.join(', ')}`, 'error');
+									}
+								}
+
+								socket.onmessage = originalOnMessage;
+							}
+						}
+					};
+
+					logWsMessage('Waiting 1 second before sending test messages...', 'system');
+					await new Promise((resolve) => setTimeout(resolve, 1000));
+
+					for (let i = 1; i <= 5; i++) {
+						const message = `Test message ${i} - ${new Date().toISOString()}`;
+						sent.push(message);
+						socket.send(message);
+						logWsMessage(`Echo test sent: ${message}`, 'send');
+						await new Promise((resolve) => setTimeout(resolve, 500));
+					}
+				});
+
+				ws.clearOutput.addEventListener('click', () => {
+					ws.output.innerHTML = '';
+					logWsMessage('Output cleared', 'system');
+				});
+
+				// Method select change handler to show/hide body input
+				const methodSelect = document.getElementById('methodSelect');
+				if (methodSelect) {
+					methodSelect.addEventListener('change', () => {
+						const bodySection = document.getElementById('bodySection');
+						if (bodySection) {
+							bodySection.style.display = ['POST', 'PUT', 'PATCH'].includes(methodSelect.value) ? 'block' : 'none';
+						}
+					});
+				}
+			});
+		</script>
 	</body>
 </html>

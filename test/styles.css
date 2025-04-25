@@ -1,37 +1,46 @@
 body {
 	font-family: Arial, sans-serif;
-	max-width: 900px;
-	margin: 0 auto;
+	line-height: 1.6;
+	margin: 0;
 	padding: 20px;
+	max-width: 1100px;
+	margin: 0 auto;
 	background-color: #f5f5f5;
 }
-.container {
-	display: flex;
-	flex-direction: column;
-	gap: 20px;
-}
-.card {
-	border: 1px solid #ccc;
-	border-radius: 4px;
-	padding: 16px;
-	background: #f9f9f9;
-	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
+
+h1,
 h2 {
-	margin-top: 0;
 	color: #333;
-	border-bottom: 1px solid #eee;
-	padding-bottom: 10px;
 }
-pre {
-	background: #eee;
-	padding: 10px;
+
+.container {
+	background: white;
+	border-radius: 8px;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+	padding: 20px;
+	margin-bottom: 20px;
+}
+
+.controls {
+	margin-bottom: 20px;
+}
+
+input[type='text'],
+select,
+textarea {
+	padding: 8px;
+	width: 300px;
+	border: 1px solid #ddd;
 	border-radius: 4px;
-	overflow-x: auto;
-	max-height: 200px;
-	overflow-y: auto;
-	font-size: 14px;
+	margin-bottom: 10px;
 }
+
+textarea {
+	width: 100%;
+	height: 100px;
+	font-family: monospace;
+}
+
 button {
 	background: #4caf50;
 	border: none;
@@ -45,55 +54,194 @@ button {
 	cursor: pointer;
 	border-radius: 4px;
 }
-button:disabled {
-	background: #cccccc;
-	cursor: not-allowed;
+
+button:hover {
+	background: #45a049;
 }
-input[type='text'],
-select,
-textarea {
-	padding: 8px;
-	width: 100%;
-	box-sizing: border-box;
-	margin-bottom: 10px;
+
+button.category {
+	background: #2196f3;
+}
+
+button.category:hover {
+	background: #0b7dda;
+}
+
+button.quick-test {
+	background: #607d8b;
+	margin: 5px;
+	font-size: 0.9em;
+}
+
+button.quick-test:hover {
+	background: #455a64;
+}
+
+.output {
+	background: #f9f9f9;
 	border: 1px solid #ddd;
 	border-radius: 4px;
+	padding: 10px;
+	height: 500px;
+	overflow-y: auto;
+	font-family: monospace;
+	font-size: 14px;
+	white-space: pre-wrap;
 }
-.success {
-	color: green;
+
+.test-log {
+	margin-bottom: 5px;
+}
+
+.test-error {
+	color: #e74c3c;
 	font-weight: bold;
+	margin-bottom: 5px;
 }
-.error {
-	color: red;
-	font-weight: bold;
+
+.test-success {
+	background-color: #dff0d8;
+	border: 1px solid #d0e9c6;
+	color: #3c763d;
+	padding: 10px;
+	border-radius: 4px;
+	margin-top: 15px;
 }
-.controls {
+
+.test-warning {
+	background-color: #fcf8e3;
+	border: 1px solid #faf2cc;
+	color: #8a6d3b;
+	padding: 10px;
+	border-radius: 4px;
+	margin-top: 15px;
+}
+
+.test-summary {
+	margin-top: 15px;
+	padding: 10px;
+	border-radius: 4px;
+}
+
+.test-summary h3 {
+	margin-top: 0;
+}
+
+.category-buttons {
 	display: flex;
-	gap: 10px;
 	flex-wrap: wrap;
-	margin-bottom: 10px;
+	gap: 8px;
+	margin: 15px 0;
 }
-.tabs {
-	display: flex;
-	border-bottom: 1px solid #ccc;
+
+.section-title {
+	border-bottom: 1px solid #eee;
+	padding-bottom: 5px;
+	margin: 20px 0 10px;
+}
+
+.form-group {
 	margin-bottom: 15px;
 }
-.tab {
-	padding: 8px 16px;
-	cursor: pointer;
-	background: #eee;
-	border: 1px solid #ccc;
-	border-bottom: none;
-	border-radius: 4px 4px 0 0;
-	margin-right: 4px;
-}
-.tab.active {
-	background: #fff;
+
+.form-group label {
+	display: block;
+	margin-bottom: 5px;
 	font-weight: bold;
 }
-.tab-content {
-	display: none;
+
+.tabs {
+	display: flex;
+	margin: 20px 0 15px;
+	border-bottom: 1px solid #ddd;
 }
-.tab-content.active {
+
+.tab {
+	padding: 10px 20px;
+	cursor: pointer;
+	border-radius: 4px 4px 0 0;
+	background-color: #f1f1f1;
+	margin-right: 5px;
+}
+
+.tab.active {
+	background-color: #fff;
+	border: 1px solid #ddd;
+	border-bottom-color: #fff;
+	margin-bottom: -1px;
+	font-weight: bold;
+}
+
+.quick-tests {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 5px;
+	margin: 15px 0;
+}
+
+.download-btn {
+	background-color: #007bff;
+	color: white;
+	border: none;
+	padding: 8px 16px;
+	cursor: pointer;
+	border-radius: 4px;
+	margin-top: 10px;
+	font-weight: bold;
 	display: block;
+}
+
+.download-btn:hover {
+	background-color: #0056b3;
+}
+
+.ws-test-buttons {
+	margin-bottom: 15px;
+}
+
+.ws-test-buttons button {
+	margin-right: 10px;
+	padding: 8px 15px;
+	background-color: #4caf50;
+	color: white;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+}
+
+.ws-test-buttons button:hover {
+	background-color: #45a049;
+}
+
+.ws-test-buttons button:disabled {
+	background-color: #cccccc;
+	cursor: not-allowed;
+}
+
+.ws-system {
+	color: #666;
+	font-style: italic;
+}
+
+.ws-send {
+	color: #0066cc;
+}
+
+.ws-receive {
+	color: #009900;
+}
+
+.ws-error {
+	color: #cc0000;
+}
+
+.output-box {
+	background-color: #f5f5f5;
+	border: 1px solid #ddd;
+	padding: 10px;
+	height: 300px;
+	overflow-y: auto;
+	margin-bottom: 10px;
+	font-family: monospace;
+	white-space: pre-wrap;
 }

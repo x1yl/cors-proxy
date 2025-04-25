@@ -1,11 +1,11 @@
 <div align="center" id="top"> 
   <img src="./CORS.png" alt="Proxy" width="200px" />
 
+<a href="https://proxy.cors-proxy-ff5.workers.dev">Demo</a>
 
-  <a href="proxy.cors-proxy-ff5.workers.dev">Demo</a>
 </div>
 
-<h1 align="center">Cors Proxy on Cloudflare Worker</h1>
+<h1 align="center">CORS Proxy on Cloudflare Worker</h1>
 
 <p align="center">
   <img alt="Github top language" src="https://img.shields.io/github/languages/top/x1yl/cors-proxy?color=56BEB8">
@@ -23,14 +23,6 @@
   <img alt="Github stars" src="https://img.shields.io/github/stars/x1yl/cors-proxy?color=56BEB8" /> 
 </p>
 
-<!-- Status -->
-
-<!-- <h4 align="center">
-	🚧  Proxy 🚀 Under construction...  🚧
-</h4>
-
-<hr> -->
-
 <p align="center">
   <a href="#dart-about">About</a> &#xa0; | &#xa0; 
   <a href="#globe_with_meridians-demo">Demo</a> &#xa0; | &#xa0; 
@@ -46,7 +38,7 @@
 
 ## :dart: About
 
-A simple yet powerful CORS (Cross-Origin Resource Sharing) proxy implemented as a Cloudflare Worker. This service allows web applications to make requests to resources from different origins that would otherwise be blocked by browser security policies. It functions by proxying requests through a Cloudflare Worker, adding the necessary CORS headers to enable cross-origin access.
+A powerful CORS (Cross-Origin Resource Sharing) proxy implemented as a Cloudflare Worker. This service solves browser CORS restrictions by proxying requests through a Cloudflare Worker and adding necessary headers to enable cross-origin access. It supports both standard HTTP requests and WebSocket connections, making it versatile for all types of web applications.
 
 ## :globe_with_meridians: Demo
 
@@ -55,18 +47,22 @@ A demo instance is available at [proxy.cors-proxy-ff5.workers.dev](https://proxy
 :warning: **Important Usage Guidelines:**
 
 - This demo is provided for testing and evaluation purposes only
-- Excessive usage or abuse of the demo instance may lead to IP bans
-- It is strongly recommended that you deploy your own instance for production use
-- The demo may be taken down or have increased usage limits applied at any time
+- Please deploy your own instance for production use
+- Excessive usage of the demo instance may result in rate limiting
+- No data persistence or privacy guarantees on the demo instance
 
 ## :sparkles: Features
 
-:heavy_check_mark: Automatic CORS headers for any request;\
-:heavy_check_mark: Support for preflight (OPTIONS) requests;\
-:heavy_check_mark: Custom header forwarding;\
-:heavy_check_mark: Origin whitelisting capability;\
-:heavy_check_mark: Request URL patterns blacklisting;\
-:heavy_check_mark: Easy deployment on Cloudflare's global network;
+:heavy_check_mark: **Automatic CORS headers** for any request  
+:heavy_check_mark: **WebSocket proxying** with bidirectional communication  
+:heavy_check_mark: **Server-Sent Events (SSE)** support for real-time data  
+:heavy_check_mark: **Support for all HTTP methods** (GET, POST, PUT, DELETE, etc.)  
+:heavy_check_mark: **Streaming response handling** for large data transfers  
+:heavy_check_mark: **Binary data support** for file transfers  
+:heavy_check_mark: **Custom header forwarding** and management  
+:heavy_check_mark: **Origin whitelisting** capability for security  
+:heavy_check_mark: **URL pattern blacklisting** to restrict access  
+:heavy_check_mark: **Global deployment** on Cloudflare's network
 
 ## :rocket: Technologies
 
@@ -76,6 +72,7 @@ The following tools were used in this project:
 - [Node.js](https://nodejs.org/en/) - JavaScript runtime for development
 - [Wrangler](https://developers.cloudflare.com/workers/wrangler/) - CLI tool for Cloudflare Workers
 - [Web Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) - For handling HTTP requests
+- [WebSocket API](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket) - For WebSocket functionality
 
 ## :white_check_mark: Requirements
 
@@ -108,82 +105,123 @@ $ pnpm dev
 $ pnpm deploy
 ```
 
-## :computer: Usage Example
+## :computer: Usage Examples
+
+### HTTP Request Example
 
 ```javascript
-fetch('proxy.cors-proxy-ff5.workers.dev/?https://httpbin.org/post', {
-        method: 'post',
-        headers: {
-                'x-foo': 'bar',
-                'x-bar': 'foo',
-                'x-cors-headers': JSON.stringify({
-                        // allows to send forbidden headers
-                        // https://developer.mozilla.org/en-US/docs/Glossary/Forbidden_header_name
-                        cookies: 'x=123',
-                }),
-        },
+// Basic fetch request through the proxy
+fetch('https://your-proxy.workers.dev/?https://api.example.com/data')
+	.then((response) => response.json())
+	.then((data) => console.log(data))
+	.catch((error) => console.error('Error:', error));
+
+// POST request with custom headers
+fetch('https://your-proxy.workers.dev/?https://api.example.com/submit', {
+	method: 'POST',
+	headers: {
+		'Content-Type': 'application/json',
+		'x-cors-headers': JSON.stringify({
+			// Custom headers that would normally be restricted
+			Authorization: 'Bearer token123',
+		}),
+	},
+	body: JSON.stringify({ key: 'value' }),
 })
-        .then((res) => {
-                // allows to read all headers (even forbidden headers like set-cookies)
-                const headers = JSON.parse(res.headers.get('cors-received-headers'));
-                console.log(headers);
-                return res.json();
-        })
-        .then(console.log);
+	.then((response) => {
+		// Access all response headers including normally restricted ones
+		const headers = JSON.parse(response.headers.get('cors-received-headers'));
+		console.log(headers);
+		return response.json();
+	})
+	.then((data) => console.log(data));
 ```
 
-**Note:**
+### WebSocket Example
 
-All received headers are also returned in "cors-received-headers" header. This allows you to access headers that would normally be inaccessible due to browser restrictions.
+```javascript
+// Connect to a WebSocket through the proxy
+const socket = new WebSocket('ws://your-proxy.workers.dev/?wss://echo.websocket.org');
+
+socket.onopen = () => {
+	console.log('Connected to WebSocket through proxy');
+	socket.send('Hello Server!');
+};
+
+socket.onmessage = (event) => {
+	console.log('Received:', event.data);
+};
+
+socket.onclose = () => {
+	console.log('WebSocket connection closed');
+};
+```
+
+### Server-Sent Events Example
+
+```javascript
+// Connect to SSE endpoint through the proxy
+const evtSource = new EventSource('https://your-proxy.workers.dev/?https://api.example.com/events');
+
+evtSource.onmessage = (event) => {
+	const data = JSON.parse(event.data);
+	console.log('New event:', data);
+};
+
+evtSource.onerror = (error) => {
+	console.error('EventSource error:', error);
+	evtSource.close();
+};
+```
+
+## :test_tube: Testing
+
+The project includes a comprehensive test client to verify your proxy's functionality:
+
+```bash
+# Run the test client
+$ pnpm test:client
+```
+
+The test client supports:
+
+- Testing all HTTP methods
+- WebSocket connections
+- Server-Sent Events
+- File uploads and downloads
+- Authentication methods
+- Error handling
 
 ## :hammer_and_wrench: Contributing and Development
 
-We welcome contributions! Here's how to set up your development environment and test your changes:
+We welcome contributions! To get started contributing to this project:
 
-#### Development Setup
+1. **Fork and clone the repository**
+2. **Switch to the staging branch**: `git checkout staging`
+3. **Make your changes**
+4. **Test thoroughly** using the included test client
+5. **Submit a PR** targeting the staging branch
 
-1. Fork and clone the repository
-2. Make sure to switch to the staging branch (`git checkout staging`)
-3. Install dependencies with (`pnpm install`)
+For detailed instructions on how to contribute, please see [CONTRIBUTING.md](CONTRIBUTING.md).
 
-#### Test Server
+> ⚠️ **Important**: All pull requests should target the `staging` branch, not `main`!
 
-The test server simulates various API endpoints and WebSocket connections for testing the CORS proxy functionality:
+### Test Client
 
-```bash
-# Start the test server
-$ pnpm test:server
-```
+The project includes a comprehensive HTML-based test client for interactively testing your proxy implementation. The test client supports:
 
-#### Test Client
-
-The project includes an HTML-based test client for interactively testing your proxy implementation:
+- Full testing of https://httpbingo.com endpoints
+- Individual endpoint testing with custom parameters
+- Support for all HTTP methods (GET, POST, PUT, DELETE, etc.)
+- Testing of streaming responses and Server-Sent Events (SSE)
+- WebSocket connection testing with echo capability
+- Test report generation and download
 
 ```bash
 # Start the test client by opening in your browser:
 $ pnpm test:client
-# Or simply double-click the file to open it in your default browser
+# Or simply open test/client.html in your browser
 ```
-
-**Note:**
-
-If you are on Linux, you will have to edit test:client in package.json to `open ./test/client.html`
-
-### Testing Workflow
-
-1. Run the test server: `pnpm test:server`
-2. Run your local proxy: `pnpm dev`
-3. Open client.html in your browser
-4. Configure the client with your proxy URL (default: http://localhost:8787) and test server URL (default: http://localhost:3000)
-5. Use the interface to test everything is working
-
-### Submitting Changes
-
-1. Commit your changes (`git commit -m 'New Features'`)
-2. Pust to the branch (`git push origin staging`)
-3. Create a Pull Request on the Staging branch **NOT** the main branch!
-
-When submitting your PR, please ensure you've tested thoroughly using the provided test client and server.
 
 ## :memo: License
 
